@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Detail – HealthAI Co-Creation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f4f8; color: #1e293b; }
+
+    nav {
+      background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; height: 60px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo { font-weight: 700; font-size: 1.2rem; color: #1d4ed8; text-decoration: none; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: #475569; text-decoration: none; font-size: 0.9rem; }
+    .nav-links a:hover { color: #1d4ed8; }
+
+    .page-wrapper { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+
+    /* BREADCRUMB */
+    .breadcrumb { font-size: 0.85rem; color: #94a3b8; margin-bottom: 1.25rem; }
+    .breadcrumb a { color: #2563eb; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    /* MAIN CARD */
+    .main-card {
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 16px; overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .post-header {
+      padding: 1.75rem 2rem 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .post-header-top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+    }
+
+    .post-title { font-size: 1.5rem; font-weight: 700; line-height: 1.3; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .post-meta-row {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .meta-pill {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.75rem;
+      background: #f8fafc; border: 1px solid #e2e8f0;
+      border-radius: 20px; font-size: 0.8rem; color: #475569;
+    }
+    .meta-pill.role-eng { background: #dbeafe; border-color: #bfdbfe; color: #1d4ed8; }
+    .meta-pill.role-doc { background: #dcfce7; border-color: #bbf7d0; color: #15803d; }
+
+    /* BODY */
+    .post-body { padding: 1.75rem 2rem; }
+
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 0.5rem;
+    }
+    .section-value {
+      font-size: 0.95rem; color: #374151; line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+    .detail-item {}
+
+    /* CONFIDENTIAL BANNER */
+    .conf-banner {
+      background: #fef9c3; border: 1px solid #fde047;
+      border-radius: 8px; padding: 0.75rem 1rem;
+      font-size: 0.85rem; color: #713f12;
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* OWNER ACTIONS */
+    .owner-actions {
+      background: #f8fafc; border-top: 1px solid #e2e8f0;
+      padding: 1.25rem 2rem;
+      display: flex; gap: 0.75rem; flex-wrap: wrap;
+    }
+    .btn { padding: 0.6rem 1.35rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-block; transition: all 0.2s; }
+    .btn-primary   { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-success   { background: #16a34a; color: #fff; }
+    .btn-success:hover { background: #15803d; }
+    .btn-danger    { background: #fff; color: #dc2626; border: 1.5px solid #fca5a5; }
+    .btn-danger:hover { background: #fef2f2; }
+    .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .btn-outline   { background: #fff; color: #2563eb; border: 1.5px solid #93c5fd; }
+    .btn-outline:hover { background: #eff6ff; }
+
+    /* INTEREST PANEL */
+    .interest-panel {
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 16px; padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .interest-panel h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .interest-panel p  { font-size: 0.88rem; color: #64748b; margin-bottom: 1.25rem; }
+
+    textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1.5px solid #d1d5db; border-radius: 8px;
+      font-size: 0.9rem; font-family: inherit;
+      resize: vertical; min-height: 100px;
+    }
+    textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+
+    .char-count { font-size: 0.75rem; color: #94a3b8; text-align: right; margin-top: 4px; margin-bottom: 1rem; }
+
+    .interest-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+
+    /* AUTHOR CARD */
+    .author-card {
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 16px; padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .author-card h3 { font-size: 0.9rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
+    .author-info { display: flex; align-items: center; gap: 1rem; }
+    .author-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .author-name { font-weight: 700; font-size: 0.95rem; }
+    .author-meta { font-size: 0.82rem; color: #64748b; margin-top: 2px; }
+
+    /* NOT FOUND */
+    .not-found {
+      text-align: center; padding: 4rem 2rem;
+      background: #fff; border-radius: 16px; border: 1px solid #e2e8f0;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: #1e293b; color: #fff;
+      padding: 0.75rem 1.25rem; border-radius: 10px;
+      font-size: 0.9rem; font-weight: 500;
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.3s; z-index: 999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #16a34a; }
+
+    /* CONFIRM MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: #fff; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; }
+    .modal h2 { margin-bottom: 0.5rem; font-size: 1.1rem; }
+    .modal p { color: #64748b; font-size: 0.88rem; margin-bottom: 1.5rem; line-height: 1.6; }
+    .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+
+    @media (max-width: 600px) {
+      .detail-grid { grid-template-columns: 1fr; }
+      .post-header, .post-body, .owner-actions { padding-left: 1.25rem; padding-right: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="dashboard.html">HealthAI</a>
+  <ul class="nav-links">
+    <li><a href="post-feed.html">Browse Posts</a></li>
+    <li><a href="create-post.html">Create Post</a></li>
+    <li><a href="profile.html">Profile</a></li>
+    <li><a href="login.html">Logout</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <div class="breadcrumb">
+    <a href="post-feed.html">← Browse Posts</a>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<!-- Partner Found Confirmation Modal -->
+<div class="modal-overlay" id="partnerModal">
+  <div class="modal">
+    <h2>Mark as Partner Found?</h2>
+    <p>This will close the post and mark it as <strong>Partner Found</strong>. Other interested parties will no longer be able to send requests. This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="document.getElementById('partnerModal').classList.remove('show')">Cancel</button>
+      <button class="btn btn-success" onclick="confirmPartnerFound()">Yes, Mark as Found</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="mock-data.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const postId = parseInt(params.get('id'));
+  const currentUser = getCurrentUser() || MOCK_USERS[0]; // fallback: Ali (engineer)
+
+  const post = MOCK_POSTS.find(p => p.id === postId);
+  const content = document.getElementById('content');
+
+  function stageLabelMap(val) {
+    const map = { idea: 'Idea', concept_validation: 'Concept Validation', prototype: 'Prototype Developed', pilot_testing: 'Pilot Testing', pre_deployment: 'Pre-Deployment' };
+    return map[val] || val;
+  }
+
+  function collabLabel(val) {
+    const map = { advisor: 'Advisor', co_founder: 'Co-Founder', research_partner: 'Research Partner' };
+    return map[val] || val;
+  }
+
+  function commitLabel(val) {
+    const map = { advisory: 'Advisory (2–3 hrs/week)', part_time: 'Part-time (5–10 hrs/week)', full_time: 'Full-time potential' };
+    return map[val] || val;
+  }
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  if (!post) {
+    content.innerHTML = `
+      <div class="not-found">
+        <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+        <h2>Post not found</h2>
+        <p style="color:#64748b;margin:0.5rem 0 1.5rem">This post may have been removed or the link is incorrect.</p>
+        <a href="post-feed.html" class="btn btn-primary">Browse Posts</a>
+      </div>`;
+  } else {
+    const author = MOCK_USERS.find(u => u.id === post.user_id) || {};
+    const { label: statusLabel, color: statusColor } = STATUS_META[post.status] || { label: post.status, color: '#6b7280' };
+    const isOwner = currentUser && currentUser.id === post.user_id;
+    const isClosed = ['partner_found', 'expired'].includes(post.status);
+    const roleClass = post.role_type === 'engineer' ? 'role-eng' : 'role-doc';
+    const roleLabel = post.role_type === 'engineer' ? '⚙ Engineer Post' : '🏥 Healthcare Post';
+
+    // Author initials
+    const initials = author.name ? author.name.split(' ').map(w => w[0]).join('').slice(0,2) : '?';
+
+    const confBanner = post.confidentiality === 'meeting_only'
+      ? `<div class="conf-banner">🔒 <span>Detailed information will only be shared after a meeting is scheduled. Contact the author to proceed.</span></div>`
+      : '';
+
+    const ownerActions = isOwner ? `
+      <div class="owner-actions">
+        <a href="create-post.html?edit=${post.id}" class="btn btn-outline">✏ Edit Post</a>
+        ${post.status === 'active' || post.status === 'meeting_scheduled'
+          ? `<button class="btn btn-success" onclick="document.getElementById('partnerModal').classList.add('show')">🤝 Mark Partner Found</button>`
+          : ''}
+        <button class="btn btn-danger" onclick="deletePost()">🗑 Delete Post</button>
+      </div>` : '';
+
+    const interestPanel = (!isOwner && !isClosed) ? `
+      <div class="interest-panel" id="interestPanel">
+        <h3>Interested in collaborating?</h3>
+        <p>Send a short message to introduce yourself and explain why you're a good fit.</p>
+        <textarea id="interestMsg" maxlength="300" placeholder="Hi, I'm a cardiologist at Hacettepe University with 10 years of ECG analysis experience…"></textarea>
+        <div class="char-count"><span id="msgCount">0</span>/300 characters</div>
+        <div class="interest-actions">
+          <button class="btn btn-secondary" onclick="document.getElementById('interestPanel').style.display='none'">Cancel</button>
+          <button class="btn btn-primary" onclick="sendInterest()">Send Interest →</button>
+        </div>
+      </div>` : '';
+
+    const closedBanner = isClosed ? `
+      <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;text-align:center;color:#64748b;font-size:0.9rem;">
+        This post is <strong>${statusLabel}</strong> and is no longer accepting collaboration requests.
+      </div>` : '';
+
+    content.innerHTML = `
+      <!-- Author -->
+      <div class="author-card">
+        <h3>Posted by</h3>
+        <div class="author-info">
+          <div class="author-avatar">${initials}</div>
+          <div>
+            <div class="author-name">${author.name || 'Unknown'}</div>
+            <div class="author-meta">${author.institution || ''} · ${author.city || ''}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Post -->
+      <div class="main-card">
+        <div class="post-header">
+          <div class="post-header-top">
+            <h1 class="post-title">${post.title}</h1>
+            <span class="status-badge" style="background:${statusColor}22;color:${statusColor}">${statusLabel}</span>
+          </div>
+          <div class="post-meta-row">
+            <span class="meta-pill ${roleClass}">${roleLabel}</span>
+            <span class="meta-pill">🔬 ${post.domain}</span>
+            <span class="meta-pill">📍 ${post.city}, ${post.country}</span>
+            <span class="meta-pill">📊 ${stageLabelMap(post.stage)}</span>
+            <span class="meta-pill">📅 Expires ${post.expiry_date}</span>
+          </div>
+        </div>
+
+        <div class="post-body">
+          ${confBanner}
+
+          <div class="section-label">About the Project</div>
+          <div class="section-value">${post.explanation}</div>
+
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="section-label">Expertise Needed</div>
+              <div class="section-value">${post.expertise_needed}</div>
+            </div>
+            <div class="detail-item">
+              <div class="section-label">Collaboration Type</div>
+              <div class="section-value">${collabLabel(post.collaboration_type)}</div>
+            </div>
+            <div class="detail-item">
+              <div class="section-label">Commitment Level</div>
+              <div class="section-value">${commitLabel(post.commitment)}</div>
+            </div>
+            <div class="detail-item">
+              <div class="section-label">Confidentiality</div>
+              <div class="section-value">${post.confidentiality === 'meeting_only' ? '🔒 Details in meeting only' : '🌐 Public short pitch'}</div>
+            </div>
+          </div>
+        </div>
+
+        ${ownerActions}
+      </div>
+
+      ${closedBanner}
+      ${interestPanel}
+    `;
+
+    // Char counter for interest message
+    const msgEl = document.getElementById('interestMsg');
+    if (msgEl) {
+      msgEl.addEventListener('input', () => {
+        document.getElementById('msgCount').textContent = msgEl.value.length;
+      });
+    }
+  }
+
+  function sendInterest() {
+    const msg = document.getElementById('interestMsg')?.value.trim();
+    if (!msg || msg.length < 10) {
+      showToast('Please write at least 10 characters.', '');
+      return;
+    }
+
+    const payload = {
+      post_id: post.id,
+      requester_id: currentUser.id,
+      message: msg,
+    };
+
+    // Mock API call
+    console.log('[POST /api/meetings/interest]', payload);
+
+    // If confidential, go to meeting-request page
+    if (post.confidentiality === 'meeting_only') {
+      window.location.href = `meeting-request.html?post_id=${post.id}`;
+    } else {
+      document.getElementById('interestPanel').innerHTML = `
+        <div style="text-align:center;padding:1.5rem;color:#16a34a">
+          <div style="font-size:2rem;margin-bottom:0.5rem">✅</div>
+          <strong>Interest sent!</strong>
+          <p style="color:#64748b;font-size:0.88rem;margin-top:0.4rem">The post author will be notified and may reach out to schedule a meeting.</p>
+        </div>`;
+      showToast('Your interest has been sent!', 'success');
+    }
+  }
+
+  function confirmPartnerFound() {
+    const idx = MOCK_POSTS.findIndex(p => p.id === post.id);
+    if (idx !== -1) MOCK_POSTS[idx].status = 'partner_found';
+    console.log('[PATCH /api/posts/' + post.id + '] status: partner_found');
+    document.getElementById('partnerModal').classList.remove('show');
+    showToast('🎉 Post marked as Partner Found!', 'success');
+    setTimeout(() => window.location.href = 'post-feed.html', 1800);
+  }
+
+  function deletePost() {
+    if (!confirm('Are you sure you want to delete this post? This cannot be undone.')) return;
+    const idx = MOCK_POSTS.findIndex(p => p.id === post.id);
+    if (idx !== -1) MOCK_POSTS.splice(idx, 1);
+    console.log('[DELETE /api/posts/' + post.id + ']');
+    showToast('Post deleted.', '');
+    setTimeout(() => window.location.href = 'post-feed.html', 1500);
+  }
+</script>
+</body>
+</html>

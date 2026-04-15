@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Register</h2>
+
+  <form id="registerForm">
+    <input type="text" id="name" placeholder="Ad Soyad" required>
+    <input type="email" id="email" placeholder="E-posta (.edu)" required>
+    <input type="password" id="password" placeholder="Şifre" required>
+    <input type="password" id="confirm" placeholder="Şifre Tekrar" required>
+
+    <select id="role">
+      <option value="">Rol seç</option>
+      <option value="engineer">Engineer</option>
+      <option value="doctor">Healthcare Professional</option>
+    </select>
+
+    <p class="error" id="error"></p>
+
+    <button type="submit">Kayıt Ol</button>
+  </form>
+</div>
+
+<script src="mock-data.js"></script>
+<script src="register.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <h1>Admin Panel</h1>
+
+  <div>
+    <button onclick="showTab('posts')">Posts</button>
+    <button onclick="showTab('users')">Users</button>
+    <button onclick="showTab('logs')">Logs</button>
+  </div>
+
+  <div id="postsTab">
+    <h2>Posts</h2>
+
+    <div>
+      <input id="postDomainFilter" placeholder="Filter by domain" />
+      <select id="postStatusFilter">
+        <option value="">All Statuses</option>
+        <option value="draft">Draft</option>
+        <option value="active">Active</option>
+        <option value="meeting_scheduled">Meeting Scheduled</option>
+        <option value="partner_found">Partner Found</option>
+        <option value="expired">Expired</option>
+      </select>
+      <input id="postDateFilter" type="date" />
+      <button onclick="filterPosts()">Filter</button>
+      <button onclick="resetPostFilters()">Reset</button>
+    </div>
+
+    <table border="1" id="postsTable"></table>
+  </div>
+
+  <div id="usersTab" style="display:none;">
+    <h2>Users</h2>
+
+    <div>
+      <select id="userRoleFilter">
+        <option value="">All Roles</option>
+        <option value="engineer">Engineer</option>
+        <option value="doctor">Doctor</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button onclick="filterUsers()">Filter</button>
+      <button onclick="resetUserFilters()">Reset</button>
+    </div>
+
+    <table border="1" id="usersTable"></table>
+  </div>
+
+  <div id="logsTab" style="display:none;">
+    <h2>Activity Logs</h2>
+
+    <div>
+      <select id="logUserFilter">
+        <option value="">All Users</option>
+      </select>
+      <input id="logDateFilter" type="date" />
+      <button onclick="filterLogs()">Filter</button>
+      <button onclick="resetLogFilters()">Reset</button>
+      <button onclick="exportCSV()">Export CSV</button>
+    </div>
+
+    <table border="1" id="logsTable"></table>
+  </div>
+
+  <script src="mock-data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

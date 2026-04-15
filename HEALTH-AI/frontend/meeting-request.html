@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Meeting Request</title>
+  <link rel="stylesheet" href="meeting-request.css">
+</head>
+<body>
+
+  <h1>Request a Meeting</h1>
+
+  <div id="postInfo"></div>
+
+  <hr>
+
+  <h2>Step 1: Your Message</h2>
+  <textarea id="message" maxlength="300" placeholder="Write your message..."></textarea>
+  <p id="charCount">0 / 300</p>
+
+  <div id="ndaSection" style="display:none;">
+    <h2>Step 2: NDA</h2>
+    <label>
+      <input type="checkbox" id="ndaCheck">
+      I accept NDA
+    </label>
+  </div>
+
+  <h2>Step 3: Propose Time Slots</h2>
+
+  <input type="date" id="date1">
+  <input type="time" id="time1"><br><br>
+
+  <input type="date" id="date2">
+  <input type="time" id="time2"><br><br>
+
+  <input type="date" id="date3">
+  <input type="time" id="time3"><br><br>
+
+  <button onclick="submitRequest()">Submit Request</button>
+
+  <script src="mock-data.js"></script>
+  <script src="meeting-request.js"></script>
+</body>
+</html>

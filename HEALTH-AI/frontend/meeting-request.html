@@ -1,43 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Meeting Request</title>
-  <link rel="stylesheet" href="meeting-request.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meeting Request – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
+  <script src="mock-data.js"></script>
+  <script src="shared.js"></script>
+  <script>requireLogin();</script>
 
-  <h1>Request a Meeting</h1>
+  <div class="page" style="max-width:680px;">
+    <div class="page-header">
+      <div>
+        <h1>Meeting Request</h1>
+        <p>Propose time slots to connect with the post owner</p>
+      </div>
+    </div>
 
-  <div id="postInfo"></div>
+    <!-- Post summary card -->
+    <div class="card" id="postInfo">
+      <p style="color:var(--muted);">Loading post…</p>
+    </div>
 
-  <hr>
+    <!-- Request form card -->
+    <div class="card" style="margin-top:16px;">
 
-  <h2>Step 1: Your Message</h2>
-  <textarea id="message" maxlength="300" placeholder="Write your message..."></textarea>
-  <p id="charCount">0 / 300</p>
+      <!-- Step 1: Message -->
+      <h3 style="margin-bottom:14px;">Step 1 — Your Message</h3>
+      <div class="form-group">
+        <label>Message <span style="color:var(--danger)">*</span></label>
+        <textarea id="message" maxlength="300" placeholder="Briefly describe your background and why you are interested in this collaboration…" style="height:110px;"></textarea>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;text-align:right;" id="charCount">0 / 300</div>
+      </div>
 
-  <div id="ndaSection" style="display:none;">
-    <h2>Step 2: NDA</h2>
-    <label>
-      <input type="checkbox" id="ndaCheck">
-      I accept NDA
-    </label>
+      <!-- Step 2: NDA (conditional) -->
+      <div id="ndaSection" style="display:none;">
+        <hr class="divider" />
+        <h3 style="margin-bottom:14px;">Step 2 — NDA Agreement</h3>
+        <div class="nda-box">
+          <h3>⚠️ NDA Required</h3>
+          <p style="font-size:13px;color:var(--mid);margin-bottom:10px;">
+            This post has confidential content. By proceeding, you agree not to disclose any information shared during this collaboration.
+          </p>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="ndaCheck" />
+            I accept the Non-Disclosure Agreement (NDA) terms
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 3: Time Slots -->
+      <hr class="divider" />
+      <h3 style="margin-bottom:4px;">Step 3 — Propose Time Slots</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Provide at least one preferred date and time for the meeting.</p>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="two-col" style="align-items:flex-end;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Slot 1 — Date</label>
+            <input type="date" id="date1" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Time</label>
+            <input type="time" id="time1" />
+          </div>
+        </div>
+        <div class="two-col" style="align-items:flex-end;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Slot 2 — Date</label>
+            <input type="date" id="date2" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Time</label>
+            <input type="time" id="time2" />
+          </div>
+        </div>
+        <div class="two-col" style="align-items:flex-end;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Slot 3 — Date</label>
+            <input type="date" id="date3" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Time</label>
+            <input type="time" id="time3" />
+          </div>
+        </div>
+      </div>
+
+      <div id="formError" class="alert alert-danger" style="margin-top:14px;"></div>
+
+      <div style="display:flex;gap:10px;margin-top:18px;">
+        <button class="btn btn-primary" onclick="submitRequest()">Send Meeting Request</button>
+        <a href="javascript:history.back()" class="btn btn-outline">Cancel</a>
+      </div>
+    </div>
   </div>
 
-  <h2>Step 3: Propose Time Slots</h2>
-
-  <input type="date" id="date1">
-  <input type="time" id="time1"><br><br>
-
-  <input type="date" id="date2">
-  <input type="time" id="time2"><br><br>
-
-  <input type="date" id="date3">
-  <input type="time" id="time3"><br><br>
-
-  <button onclick="submitRequest()">Submit Request</button>
-
-  <script src="mock-data.js"></script>
   <script src="meeting-request.js"></script>
 </body>
 </html>

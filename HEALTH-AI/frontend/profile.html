@@ -1,53 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Profile & Settings</title>
-  <link rel="stylesheet" href="profile.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
+  <script src="mock-data.js"></script>
+  <script src="shared.js"></script>
+  <script>requireLogin();</script>
 
-  <h1>Profile & Settings</h1>
-
-  <div class="profile-card">
-    <div class="field">
-      <label>Full Name</label>
-      <input type="text" id="fullName" disabled>
+  <div class="page" style="max-width:680px;">
+    <div class="page-header">
+      <div>
+        <h1>Profile &amp; Settings</h1>
+        <p>Manage your account information and privacy settings</p>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Email</label>
-      <input type="email" id="email" disabled>
+    <div class="card">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+
+      <div class="two-col">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="fullName" disabled />
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <input type="text" id="role" disabled />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" disabled />
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Institution</label>
+          <input type="text" id="institution" disabled />
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" id="city" disabled />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Area of Expertise</label>
+        <input type="text" id="expertise" disabled />
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;">
+        <button class="btn btn-primary"  onclick="enableEdit()">Edit Profile</button>
+        <button class="btn btn-outline"  onclick="saveProfile()">Save Changes</button>
+      </div>
     </div>
 
-    <div class="field">
-      <label>Institution</label>
-      <input type="text" id="institution" disabled>
-    </div>
-
-    <div class="field">
-      <label>Expertise</label>
-      <input type="text" id="expertise" disabled>
-    </div>
-
-    <div class="field">
-      <label>City</label>
-      <input type="text" id="city" disabled>
-    </div>
-
-    <div class="field">
-      <label>Role</label>
-      <input type="text" id="role" disabled>
-    </div>
-
-    <div class="actions">
-      <button onclick="enableEdit()">Edit Profile</button>
-      <button onclick="saveProfile()">Save</button>
-      <button onclick="downloadMyData()">Download My Data</button>
-      <button onclick="deleteMyAccount()">Delete My Account</button>
+    <div class="card" style="margin-top:16px;">
+      <h3 style="margin-bottom:16px;">Privacy &amp; GDPR</h3>
+      <p style="font-size:13px;color:var(--mid);margin-bottom:16px;">
+        Under GDPR, you have the right to access, export, and delete your personal data.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <button class="btn btn-outline" onclick="downloadMyData()">↓ Download My Data (JSON)</button>
+        <button class="btn btn-danger"  onclick="deleteMyAccount()">Delete My Account</button>
+      </div>
     </div>
   </div>
 
-  <script src="mock-data.js"></script>
   <script src="profile.js"></script>
 </body>
 </html>

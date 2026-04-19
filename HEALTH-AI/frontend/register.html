@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+<div class="auth-wrap" style="align-items:flex-start;padding:32px 24px;">
+  <div class="auth-box" style="max-width:500px;margin:auto;">
+
+    <div class="auth-logo">
+      <div class="logo">H</div>
+      <div>
+        <div class="brand-name">HealthAI</div>
+        <div class="brand-sub">Co-Creation Platform</div>
+      </div>
+    </div>
+
+    <h2>Create your account</h2>
+    <p class="sub">Join the platform to discover collaborators</p>
+
+    <div id="formError"   class="alert alert-error"></div>
+    <div id="formSuccess" class="alert alert-success"></div>
+
+    <div class="form-section" style="border-top:none;margin-top:0;padding-top:0;">Account</div>
+
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="fullName" placeholder="Dr. Jane Smith" />
+    </div>
+    <div class="form-group">
+      <label>Institutional Email *</label>
+      <input type="email" id="email" placeholder="you@university.edu" />
+      <div class="form-hint">Only .edu email addresses are accepted.</div>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label>Password *</label>
+        <input type="password" id="password" placeholder="Min 8 characters" />
+        <div class="form-hint">Uppercase letter + number required.</div>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password *</label>
+        <input type="password" id="confirmPassword" placeholder="Repeat password" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Role *</label>
+      <select id="role">
+        <option value="">Select your role</option>
+        <option value="engineer">Engineer</option>
+        <option value="doctor">Healthcare Professional</option>
+      </select>
+      <div class="form-hint">Admin role is assigned separately.</div>
+    </div>
+
+    <div class="form-section">Profile (optional)</div>
+
+    <div class="two-col">
+      <div class="form-group">
+        <label>Institution</label>
+        <input type="text" id="institution" placeholder="e.g. METU" />
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" id="city" placeholder="e.g. Ankara" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Area of Expertise</label>
+      <input type="text" id="expertise" placeholder="e.g. Medical Imaging AI" />
+    </div>
+
+    <button class="btn btn-success btn-full btn-lg" style="margin-top:4px;" onclick="doRegister()">Create Account</button>
+
+    <div class="auth-footer">Already have an account? <a href="login.html">Sign in</a></div>
+
+  </div>
+</div>
+<script src="mock-data.js"></script>
+<script src="register.js"></script>
+</body>
+</html>

@@ -1,22 +1,28 @@
 const role = sessionStorage.getItem("healthai_role");
 
-if (role && role !== "admin") {
-  alert("Access denied! Only admin can view this page.");
+if (!sessionStorage.getItem("healthai_user_id")) {
   window.location.href = "login.html";
+} else if (role !== "admin") {
+  alert("Access denied! Only admin can view this page.");
+  window.location.href = "dashboard.html";
 }
 
-let posts = [...MOCK_POSTS];
+// Use session posts if available (includes newly created posts)
+const _sp = sessionStorage.getItem('healthai_posts');
+let posts = _sp ? JSON.parse(_sp) : [...MOCK_POSTS];
 let users = [...MOCK_USERS];
-let logs = [...MOCK_ACTIVITY_LOGS];
 
-function showTab(tab) {
-  document.getElementById("postsTab").style.display = "none";
-  document.getElementById("usersTab").style.display = "none";
-  document.getElementById("logsTab").style.display = "none";
+// Merge mock logs with session logs
+const _sl = JSON.parse(sessionStorage.getItem('healthai_logs') || '[]');
+const _slIds = new Set(_sl.map(l => l.id));
+let logs = [...MOCK_ACTIVITY_LOGS.filter(l => !_slIds.has(l.id)), ..._sl]
+  .sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
 
-  if (tab === "posts") document.getElementById("postsTab").style.display = "block";
-  if (tab === "users") document.getElementById("usersTab").style.display = "block";
-  if (tab === "logs") document.getElementById("logsTab").style.display = "block";
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tab + 'Panel').classList.add('active');
+  if (btn) btn.classList.add('active');
 }
 
 function getUserNameById(userId) {
@@ -35,85 +41,56 @@ function fillLogUserFilter() {
 
 function loadPosts(filteredPosts = posts) {
   const table = document.getElementById("postsTable");
-
-  table.innerHTML = `
-    <tr>
-      <th>Title</th>
-      <th>Domain</th>
-      <th>Status</th>
-      <th>Created At</th>
-      <th>Action</th>
-    </tr>
-  `;
-
+  table.innerHTML = `<thead><tr><th>Title</th><th>Domain</th><th>Status</th><th>Created</th><th>Action</th></tr></thead><tbody></tbody>`;
+  const tbody = table.querySelector('tbody');
   filteredPosts.forEach(post => {
-    table.innerHTML += `
-      <tr>
-        <td>${post.title}</td>
-        <td>${post.domain}</td>
-        <td>${post.status}</td>
-        <td>${post.created_at}</td>
-        <td><button onclick="removePost(${post.id})">Remove</button></td>
-      </tr>
-    `;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${post.title}</td>
+      <td>${post.domain}</td>
+      <td><span class="badge badge-${post.status}">${post.status}</span></td>
+      <td>${post.created_at}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="removePost(${post.id})">Remove</button></td>`;
+    tbody.appendChild(tr);
   });
 }
 
 function loadUsers(filteredUsers = users) {
   const table = document.getElementById("usersTable");
-
-  table.innerHTML = `
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Role</th>
-      <th>Institution</th>
-      <th>City</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  `;
-
+  table.innerHTML = `<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Institution</th><th>City</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody>`;
+  const tbody = table.querySelector('tbody');
   filteredUsers.forEach(user => {
-    table.innerHTML += `
-      <tr>
-        <td>${user.name}</td>
-        <td>${user.email}</td>
-        <td>${user.role}</td>
-        <td>${user.institution}</td>
-        <td>${user.city}</td>
-        <td>${user.is_suspended ? "Suspended" : "Active"}</td>
-        <td>
-          <button onclick="suspendUser(${user.id})" ${user.is_suspended ? "disabled" : ""}>
-            ${user.is_suspended ? "Suspended" : "Suspend Account"}
-          </button>
-        </td>
-      </tr>
-    `;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${user.name}</td>
+      <td style="font-size:12px;color:var(--muted);">${user.email}</td>
+      <td><span class="tag">${user.role}</span></td>
+      <td>${user.institution}</td>
+      <td>${user.city}</td>
+      <td>${user.is_suspended
+        ? '<span class="badge" style="background:#fee2e2;color:#b91c1c;">Suspended</span>'
+        : '<span class="badge" style="background:#dcfce7;color:#15803d;">Active</span>'}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="suspendUser(${user.id})" ${user.is_suspended ? "disabled" : ""}>
+          ${user.is_suspended ? "Suspended" : "Suspend"}
+        </button>
+      </td>`;
+    tbody.appendChild(tr);
   });
 }
 
 function loadLogs(filteredLogs = logs) {
   const table = document.getElementById("logsTable");
-
-  table.innerHTML = `
-    <tr>
-      <th>Timestamp</th>
-      <th>User</th>
-      <th>Action</th>
-      <th>Target</th>
-    </tr>
-  `;
-
+  table.innerHTML = `<thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Target</th></tr></thead><tbody></tbody>`;
+  const tbody = table.querySelector('tbody');
   filteredLogs.forEach(log => {
-    table.innerHTML += `
-      <tr>
-        <td>${log.timestamp}</td>
-        <td>${getUserNameById(log.user_id)}</td>
-        <td>${log.action}</td>
-        <td>${log.target_type} #${log.target_id}</td>
-      </tr>
-    `;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-family:monospace;font-size:12px;">${log.timestamp}</td>
+      <td>${getUserNameById(log.user_id)}</td>
+      <td><span class="tag" style="font-family:monospace;">${log.action}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${log.target_type} #${log.target_id}</td>`;
+    tbody.appendChild(tr);
   });
 }
 

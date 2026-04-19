@@ -3,73 +3,106 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="admin.css" />
+  <title>Admin Panel – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
 </head>
 <body>
-  <h1>Admin Panel</h1>
-
-  <div>
-    <button onclick="showTab('posts')">Posts</button>
-    <button onclick="showTab('users')">Users</button>
-    <button onclick="showTab('logs')">Logs</button>
-  </div>
-
-  <div id="postsTab">
-    <h2>Posts</h2>
-
-    <div>
-      <input id="postDomainFilter" placeholder="Filter by domain" />
-      <select id="postStatusFilter">
-        <option value="">All Statuses</option>
-        <option value="draft">Draft</option>
-        <option value="active">Active</option>
-        <option value="meeting_scheduled">Meeting Scheduled</option>
-        <option value="partner_found">Partner Found</option>
-        <option value="expired">Expired</option>
-      </select>
-      <input id="postDateFilter" type="date" />
-      <button onclick="filterPosts()">Filter</button>
-      <button onclick="resetPostFilters()">Reset</button>
-    </div>
-
-    <table border="1" id="postsTable"></table>
-  </div>
-
-  <div id="usersTab" style="display:none;">
-    <h2>Users</h2>
-
-    <div>
-      <select id="userRoleFilter">
-        <option value="">All Roles</option>
-        <option value="engineer">Engineer</option>
-        <option value="doctor">Doctor</option>
-        <option value="admin">Admin</option>
-      </select>
-      <button onclick="filterUsers()">Filter</button>
-      <button onclick="resetUserFilters()">Reset</button>
-    </div>
-
-    <table border="1" id="usersTable"></table>
-  </div>
-
-  <div id="logsTab" style="display:none;">
-    <h2>Activity Logs</h2>
-
-    <div>
-      <select id="logUserFilter">
-        <option value="">All Users</option>
-      </select>
-      <input id="logDateFilter" type="date" />
-      <button onclick="filterLogs()">Filter</button>
-      <button onclick="resetLogFilters()">Reset</button>
-      <button onclick="exportCSV()">Export CSV</button>
-    </div>
-
-    <table border="1" id="logsTable"></table>
-  </div>
-
   <script src="mock-data.js"></script>
+  <script src="shared.js"></script>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Admin Panel</h1>
+        <p>Manage posts, users, and activity logs</p>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="showTab('posts', this)">Posts</button>
+      <button class="tab-btn"       onclick="showTab('users', this)">Users</button>
+      <button class="tab-btn"       onclick="showTab('logs',  this)">Activity Logs</button>
+    </div>
+
+    <!-- Posts tab -->
+    <div class="tab-panel active" id="postsPanel">
+      <div class="filter-bar">
+        <div class="fg">
+          <label>Domain</label>
+          <input id="postDomainFilter" placeholder="e.g. Cardiology" style="width:140px;" />
+        </div>
+        <div class="fg">
+          <label>Status</label>
+          <select id="postStatusFilter" style="width:160px;">
+            <option value="">All Statuses</option>
+            <option value="draft">Draft</option>
+            <option value="active">Active</option>
+            <option value="meeting_scheduled">Meeting Scheduled</option>
+            <option value="partner_found">Partner Found</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Date</label>
+          <input id="postDateFilter" type="date" style="width:150px;" />
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-primary btn-sm" onclick="filterPosts()">Filter</button>
+          <button class="btn btn-outline btn-sm" onclick="resetPostFilters()">Reset</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table id="postsTable"></table>
+      </div>
+    </div>
+
+    <!-- Users tab -->
+    <div class="tab-panel" id="usersPanel">
+      <div class="filter-bar">
+        <div class="fg">
+          <label>Role</label>
+          <select id="userRoleFilter" style="width:160px;">
+            <option value="">All Roles</option>
+            <option value="engineer">Engineer</option>
+            <option value="doctor">Doctor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-primary btn-sm" onclick="filterUsers()">Filter</button>
+          <button class="btn btn-outline btn-sm" onclick="resetUserFilters()">Reset</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table id="usersTable"></table>
+      </div>
+    </div>
+
+    <!-- Logs tab -->
+    <div class="tab-panel" id="logsPanel">
+      <div class="filter-bar">
+        <div class="fg">
+          <label>User</label>
+          <select id="logUserFilter" style="width:160px;">
+            <option value="">All Users</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Date</label>
+          <input id="logDateFilter" type="date" style="width:150px;" />
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-primary btn-sm" onclick="filterLogs()">Filter</button>
+          <button class="btn btn-outline btn-sm" onclick="resetLogFilters()">Reset</button>
+          <button class="btn btn-success btn-sm" onclick="exportCSV()">↓ Export CSV</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table id="logsTable"></table>
+      </div>
+    </div>
+  </div>
+
   <script src="admin.js"></script>
 </body>
 </html>

@@ -1,24 +1,52 @@
+renderNav('feed');
+
 const params = new URLSearchParams(window.location.search);
 const postId = Number(params.get("post_id"));
 
-const post = MOCK_POSTS.find(p => p.id === postId);
+const _sessionPosts = JSON.parse(sessionStorage.getItem('healthai_posts') || 'null');
+const _allPosts = _sessionPosts || MOCK_POSTS;
+const post = _allPosts.find(p => p.id === postId);
 
-const postInfo = document.getElementById("postInfo");
 const messageInput = document.getElementById("message");
-const charCount = document.getElementById("charCount");
-const ndaSection = document.getElementById("ndaSection");
-const ndaCheck = document.getElementById("ndaCheck");
+const charCount    = document.getElementById("charCount");
+const ndaSection   = document.getElementById("ndaSection");
+const ndaCheck     = document.getElementById("ndaCheck");
+const formError    = document.getElementById("formError");
 
+function showErr(msg) {
+  formError.textContent = msg;
+  formError.classList.add('show');
+}
+function clearErr() {
+  formError.textContent = '';
+  formError.classList.remove('show');
+}
+
+// Render post summary card
+const postInfo = document.getElementById("postInfo");
 if (!post) {
-  postInfo.innerHTML = "<p>Post not found.</p>";
-} else {
   postInfo.innerHTML = `
-    <h2>${post.title}</h2>
-    <p><strong>Domain:</strong> ${post.domain}</p>
-    <p><strong>Status:</strong> ${post.status}</p>
-    <p><strong>City:</strong> ${post.city}</p>
-    <p><strong>Explanation:</strong> ${post.explanation}</p>
-  `;
+    <div class="empty-state">
+      <div class="empty-icon">⚠️</div>
+      <p>Post not found.</p>
+      <a href="post-feed.html" class="btn btn-outline" style="margin-top:12px;">← Back to posts</a>
+    </div>`;
+} else {
+  const statusLabels = {
+    active: 'Active', draft: 'Draft',
+    meeting_scheduled: 'Meeting Scheduled',
+    partner_found: 'Partner Found', expired: 'Expired'
+  };
+  postInfo.innerHTML = `
+    <div class="post-title" style="font-size:18px;font-weight:700;margin-bottom:8px;">${post.title}</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted);">
+      <span>${post.domain}</span>
+      <span>·</span>
+      <span>📍 ${post.city}, ${post.country}</span>
+      <span class="badge badge-${post.status}">${statusLabels[post.status] || post.status}</span>
+    </div>
+    <hr class="divider" />
+    <p style="font-size:14px;color:var(--mid);">${post.explanation}</p>`;
 
   if (post.confidentiality === "meeting_only") {
     ndaSection.style.display = "block";
@@ -30,20 +58,15 @@ messageInput.addEventListener("input", () => {
 });
 
 function submitRequest() {
-  if (!post) {
-    alert("Post not found.");
-    return;
-  }
+  clearErr();
+
+  if (!post) { showErr("Post not found."); return; }
 
   const message = messageInput.value.trim();
-
-  if (!message) {
-    alert("Please enter a message.");
-    return;
-  }
+  if (!message) { showErr("Please enter a message before submitting."); return; }
 
   if (post.confidentiality === "meeting_only" && !ndaCheck.checked) {
-    alert("You must accept the NDA to continue.");
+    showErr("You must accept the NDA to continue.");
     return;
   }
 
@@ -55,21 +78,21 @@ function submitRequest() {
   const slot3Time = document.getElementById("time3").value;
 
   const proposedSlots = [];
-
   if (slot1Date && slot1Time) proposedSlots.push(`${slot1Date} ${slot1Time}`);
   if (slot2Date && slot2Time) proposedSlots.push(`${slot2Date} ${slot2Time}`);
   if (slot3Date && slot3Time) proposedSlots.push(`${slot3Date} ${slot3Time}`);
 
   if (proposedSlots.length === 0) {
-    alert("Please add at least one proposed time slot.");
+    showErr("Please add at least one proposed time slot.");
     return;
   }
 
+  const userId = parseInt(sessionStorage.getItem('healthai_user_id'));
   const newRequest = {
     id: Date.now(),
     post_id: post.id,
-    requester_id: 1,
-    message: message,
+    from_user_id: userId,
+    message,
     nda_accepted: post.confidentiality === "meeting_only" ? ndaCheck.checked : false,
     proposed_slots: proposedSlots,
     confirmed_slot: null,
@@ -77,16 +100,11 @@ function submitRequest() {
     created_at: new Date().toISOString().slice(0, 10)
   };
 
-  console.log("POST /api/meetings", newRequest);
-  alert("Meeting request submitted successfully!");
+  const saved = JSON.parse(sessionStorage.getItem('healthai_meeting_requests') || '[]');
+  saved.push(newRequest);
+  sessionStorage.setItem('healthai_meeting_requests', JSON.stringify(saved));
 
-  messageInput.value = "";
-  charCount.textContent = "0 / 300";
-  document.getElementById("date1").value = "";
-  document.getElementById("time1").value = "";
-  document.getElementById("date2").value = "";
-  document.getElementById("time2").value = "";
-  document.getElementById("date3").value = "";
-  document.getElementById("time3").value = "";
-  ndaCheck.checked = false;
+  addLog('MEETING_REQUEST', 'meeting_request', newRequest.id);
+
+  window.location.href = 'dashboard.html';
 }

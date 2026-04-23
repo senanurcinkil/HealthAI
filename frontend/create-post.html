@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Post – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+  <div class="page" style="max-width:720px;">
+    <div class="page-header">
+      <div>
+        <h1>Create New Post</h1>
+        <p>Publish a collaboration opportunity on the platform</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="formError"   class="alert alert-error"></div>
+      <div id="formSuccess" class="alert alert-success"></div>
+
+      <div class="form-section" style="border-top:none;margin-top:0;padding-top:0;">Post Details</div>
+
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" id="title" placeholder="e.g. AI-Powered ECG Analysis Tool" />
+      </div>
+
+      <div class="two-col">
+        <div class="form-group">
+          <label>Working Domain *</label>
+          <select id="domain">
+            <option value="">Select domain</option>
+            <option>Cardiology</option><option>Radiology</option><option>Oncology</option>
+            <option>Neurology</option><option>Endocrinology</option><option>Ophthalmology</option>
+            <option>Orthopedics</option><option>Pulmonology</option><option>Dermatology</option>
+            <option>Biomedical Engineering</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Project Stage *</label>
+          <select id="stage">
+            <option value="">Select stage</option>
+            <option value="idea">Idea</option>
+            <option value="concept_validation">Concept Validation</option>
+            <option value="prototype">Prototype Developed</option>
+            <option value="pilot_testing">Pilot Testing</option>
+            <option value="pre_deployment">Pre-Deployment</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Short Explanation *</label>
+        <textarea id="explanation" placeholder="Briefly describe your project and what you are looking for. Avoid sharing sensitive IP details — those will be discussed after NDA."></textarea>
+        <div class="form-hint">Maximum 500 characters.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Expertise Needed *</label>
+        <input type="text" id="expertiseNeeded" placeholder="e.g. Cardiologist with ECG interpretation experience" />
+      </div>
+
+      <div class="form-section">Project Settings</div>
+
+      <div class="two-col">
+        <div class="form-group">
+          <label>Confidentiality Level *</label>
+          <select id="confidentiality">
+            <option value="public">🌐 Public – Short pitch visible to all</option>
+            <option value="meeting_only">🔒 Details in meeting only</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Auto-close when partner found?</label>
+          <select id="autoClose">
+            <option value="true">Yes – close automatically</option>
+            <option value="false">No – keep open</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="form-group">
+          <label>City *</label>
+          <input type="text" id="city" placeholder="e.g. Ankara" />
+        </div>
+        <div class="form-group">
+          <label>Country *</label>
+          <input type="text" id="country" placeholder="e.g. Turkey" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Expiry Date</label>
+        <input type="date" id="expiryDate" style="width:220px;" />
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="btn btn-primary btn-lg" onclick="submitPost('active')">Publish Post</button>
+        <button class="btn btn-outline btn-lg" onclick="submitPost('draft')">Save as Draft</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="create-post.js"></script>
+</body>
+</html>

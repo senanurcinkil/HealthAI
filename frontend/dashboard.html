@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1 id="welcomeMsg">Dashboard</h1>
+        <p>Overview of your activity on the platform</p>
+      </div>
+      <a href="create-post.html" class="btn btn-primary">+ New Post</a>
+    </div>
+
+    <div class="stat-grid" id="statGrid"></div>
+
+    <div class="section-title">My Posts</div>
+    <div id="myPostsList"></div>
+
+    <div class="section-title">Recently Active Posts</div>
+    <div id="recentPostsList"></div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

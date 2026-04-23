@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Posts – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <script src="mock-data.js"></script>
+  <script src="shared.js"></script>
+  <script>requireLogin();</script>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>Browse Posts</h1>
+        <p>Discover collaboration opportunities across domains</p>
+      </div>
+      <a href="create-post.html" class="btn btn-primary">+ New Post</a>
+    </div>
+
+    <div class="filter-bar">
+      <div class="fg">
+        <label>Domain</label>
+        <input id="filterDomain" placeholder="e.g. Cardiology" style="width:150px;" />
+      </div>
+      <div class="fg">
+        <label>City</label>
+        <input id="filterCity" placeholder="e.g. Ankara" style="width:120px;" />
+      </div>
+      <div class="fg">
+        <label>Status</label>
+        <select id="filterStatus" style="width:160px;">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+          <option value="meeting_scheduled">Meeting Scheduled</option>
+          <option value="partner_found">Partner Found</option>
+          <option value="expired">Expired</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Expertise Needed</label>
+        <input id="filterExpertise" placeholder="e.g. Cardiologist" style="width:170px;" />
+      </div>
+      <div class="fg">
+        <label>Stage</label>
+        <select id="filterStage" style="width:160px;">
+          <option value="">All Stages</option>
+          <option value="idea">Idea</option>
+          <option value="concept_validation">Concept Validation</option>
+          <option value="prototype">Prototype</option>
+          <option value="pilot_testing">Pilot Testing</option>
+          <option value="pre_deployment">Pre-Deployment</option>
+        </select>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-primary btn-sm" onclick="applyFilters()">Filter</button>
+        <button class="btn btn-outline btn-sm" onclick="resetFilters()">Reset</button>
+      </div>
+    </div>
+
+    <div class="result-count" id="resultCount"></div>
+    <div id="postList"></div>
+  </div>
+
+  <script src="post-feed.js"></script>
+</body>
+</html>

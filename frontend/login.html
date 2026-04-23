@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – HealthAI Platform</title>
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-box">
+
+    <div class="auth-logo">
+      <div class="logo">H</div>
+      <div>
+        <div class="brand-name">HealthAI</div>
+        <div class="brand-sub">Co-Creation Platform</div>
+      </div>
+    </div>
+
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to your account to continue</p>
+
+    <div id="errorMsg" class="alert alert-error"></div>
+
+    <div class="form-group">
+      <label>Institutional Email</label>
+      <input type="email" id="email" placeholder="you@university.edu" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Your password" />
+    </div>
+
+    <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Sign In</button>
+
+    <div class="auth-footer">
+      Don't have an account? <a href="register.html">Create one</a>
+    </div>
+
+    <div class="demo-hint">
+      <strong>Demo accounts</strong> — password for all: <code>pass123</code><br>
+      ali@metu.edu.tr (Engineer) &nbsp;·&nbsp;
+      m.oz@istanbul.edu.tr (Doctor) &nbsp;·&nbsp;
+      admin@healthai.edu (Admin)
+    </div>
+
+  </div>
+</div>
+<script src="mock-data.js"></script>
+<script src="login.js"></script>
+</body>
+</html>

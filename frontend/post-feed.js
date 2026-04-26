@@ -52,11 +52,13 @@ function renderPosts(posts) {
 
 function buildQuery() {
   const params = new URLSearchParams();
+  const keyword   = document.getElementById('filterKeyword').value.trim();
   const domain    = document.getElementById('filterDomain').value.trim();
   const city      = document.getElementById('filterCity').value.trim();
   const status    = document.getElementById('filterStatus').value;
   const expertise = document.getElementById('filterExpertise').value.trim();
   const stage     = document.getElementById('filterStage').value;
+  if (keyword)   params.set('keyword', keyword);
   if (domain)    params.set('domain', domain);
   if (city)      params.set('city', city);
   if (status)    params.set('status', status);
@@ -72,12 +74,12 @@ async function applyFilters() {
     const posts = await apiGet('/api/posts' + buildQuery());
     renderPosts(posts);
   } catch (err) {
-    toast('Failed to load posts.', 'error');
+    toast(err.message || 'Failed to load posts.', 'error');
   }
 }
 
 function resetFilters() {
-  ['filterDomain','filterCity','filterExpertise'].forEach(id => document.getElementById(id).value = '');
+  ['filterKeyword','filterDomain','filterCity','filterExpertise'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('filterStatus').value = '';
   document.getElementById('filterStage').value  = '';
   applyFilters();

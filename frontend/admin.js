@@ -37,7 +37,7 @@ async function loadPosts() {
         <td><button class="btn btn-danger btn-sm" onclick="removePost(${post.id})">Remove</button></td>`;
       tbody.appendChild(tr);
     });
-  } catch (err) { toast('Failed to load posts.', 'error'); }
+  } catch (err) { toast(err.message || 'Failed to load posts.', 'error'); }
 }
 
 async function removePost(id) {
@@ -47,7 +47,7 @@ async function removePost(id) {
     toast('Post removed.', 'success');
     loadPosts();
     loadLogs();
-  } catch (err) { toast(err.message, 'error'); }
+  } catch (err) { toast(err.message || 'Failed to remove post.', 'error'); }
 }
 
 function filterPosts()      { loadPosts(); }
@@ -86,7 +86,7 @@ async function loadUsers() {
         </td>`;
       tbody.appendChild(tr);
     });
-  } catch (err) { toast('Failed to load users.', 'error'); }
+  } catch (err) { toast(err.message || 'Failed to load users.', 'error'); }
 }
 
 async function suspendUser(id) {
@@ -96,7 +96,7 @@ async function suspendUser(id) {
     toast('User suspended.', 'success');
     loadUsers();
     loadLogs();
-  } catch (err) { toast(err.message, 'error'); }
+  } catch (err) { toast(err.message || 'Failed to suspend user.', 'error'); }
 }
 
 function filterUsers()      { loadUsers(); }
@@ -126,7 +126,7 @@ async function loadLogs() {
         <td style="color:var(--muted);font-size:12px;">${log.target_type} #${log.target_id}</td>`;
       tbody.appendChild(tr);
     });
-  } catch (err) { toast('Failed to load logs.', 'error'); }
+  } catch (err) { toast(err.message || 'Failed to load logs.', 'error'); }
 }
 
 function filterLogs()      { loadLogs(); }
@@ -152,7 +152,7 @@ async function exportCSV() {
     a.click();
     document.body.removeChild(a);
     toast('Logs exported.', 'success');
-  } catch (err) { toast(err.message, 'error'); }
+  } catch (err) { toast(err.message || 'Failed to export logs.', 'error'); }
 }
 
 // ── INIT ───────────────────────────────────────────────────────────

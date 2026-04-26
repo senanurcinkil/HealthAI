@@ -12,6 +12,19 @@ import models
 # ── DB bootstrap ──────────────────────────────────────────────────
 Base.metadata.create_all(bind=engine)
 
+# Add new columns to existing tables without dropping data
+from sqlalchemy import text
+with engine.connect() as _conn:
+    for _sql in [
+        "ALTER TABLE meeting_requests ADD COLUMN meeting_link TEXT",
+        "ALTER TABLE users ADD COLUMN is_verified INTEGER DEFAULT 1",
+    ]:
+        try:
+            _conn.execute(text(_sql))
+            _conn.commit()
+        except Exception:
+            pass  # column already exists
+
 # Seed default admin on first run
 def _seed_admin():
     db = SessionLocal()
@@ -41,6 +54,8 @@ def _allowed_origins() -> list[str]:
     if raw:
         return [o.strip().rstrip("/") for o in raw.split(",") if o.strip()]
     return [
+        "http://localhost",
+        "http://127.0.0.1",
         "http://localhost:8060",
         "http://127.0.0.1:8060",
         "http://localhost:8080",

@@ -56,7 +56,8 @@ class MeetingRequest(Base):
     nda_accepted = Column(Boolean, default=False)
     proposed_slots = Column(Text, default="[]")   # JSON string list
     confirmed_slot = Column(String, nullable=True)
-    status = Column(String, default="pending")    # pending | confirmed | declined | cancelled
+    meeting_link   = Column(String, nullable=True)
+    status = Column(String, default="pending")    # pending | scheduled | rejected
     created_at = Column(DateTime, default=datetime.utcnow)
 
     post = relationship("Post", back_populates="meeting_requests")

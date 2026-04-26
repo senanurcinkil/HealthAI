@@ -61,7 +61,7 @@ async function init() {
       : emptyState('No recent posts from other users.');
 
   } catch (err) {
-    toast('Failed to load dashboard data.', 'error');
+    toast(err.message || 'Failed to load dashboard data.', 'error');
   }
 }
 

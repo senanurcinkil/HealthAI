@@ -106,7 +106,72 @@ async function loadPost() {
       </div>
       ${isOwner ? `<div class="action-bar">${ownerActions}</div>` : ''}
     </div>
-    ${visitorArea}`;
+    ${visitorArea}
+    ${isOwner ? `<div id="meetingRequestsSection"></div>` : ''}`;
+
+  if (isOwner) loadMeetingRequests();
+}
+
+async function loadMeetingRequests() {
+  const section = document.getElementById('meetingRequestsSection');
+  if (!section) return;
+  try {
+    const requests = await apiGet('/api/posts/' + postId + '/meeting-requests');
+    if (!requests.length) {
+      section.innerHTML = `<div class="card" style="margin-top:16px;"><h3>Meeting Requests</h3><p style="color:var(--muted);margin-top:8px;">No meeting requests yet.</p></div>`;
+      return;
+    }
+    const statusColors = { pending: 'badge-active', scheduled: 'badge-partner_found', rejected: 'badge-expired' };
+    section.innerHTML = `
+      <div class="card" style="margin-top:16px;">
+        <h3 style="margin-bottom:16px;">Meeting Requests (${requests.length})</h3>
+        ${requests.map(mr => `
+          <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div>
+                <strong>${mr.requester_name}</strong>
+                <span class="badge ${statusColors[mr.status] || ''}" style="margin-left:8px;">${mr.status}</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);">${mr.created_at}</div>
+            </div>
+            <p style="margin:10px 0 8px;font-size:14px;color:var(--mid);">${mr.message}</p>
+            ${mr.proposed_slots && mr.proposed_slots.length ? `
+              <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+                Proposed slots: ${mr.proposed_slots.join(' · ')}
+              </div>` : ''}
+            ${mr.nda_accepted ? `<div style="font-size:12px;color:#15803d;margin-bottom:10px;">✓ NDA Accepted</div>` : ''}
+            ${mr.meeting_link ? `
+              <div style="font-size:13px;margin-bottom:8px;">
+                Meeting link: <a href="${mr.meeting_link}" target="_blank" style="color:var(--primary);">${mr.meeting_link}</a>
+              </div>` : ''}
+            ${mr.status === 'pending' ? `
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <input id="link_${mr.id}" type="url" placeholder="Paste Zoom / Teams link (optional)" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;" />
+                <div style="display:flex;gap:8px;">
+                  <button class="btn btn-primary btn-sm" onclick="updateMeetingRequest(${mr.id}, 'scheduled')">Schedule</button>
+                  <button class="btn btn-danger btn-sm"  onclick="updateMeetingRequest(${mr.id}, 'rejected')">Reject</button>
+                </div>
+              </div>` : ''}
+          </div>`).join('')}
+      </div>`;
+  } catch (err) {
+    section.innerHTML = '';
+    toast(err.message || 'Failed to load meeting requests.', 'error');
+  }
+}
+
+async function updateMeetingRequest(mrId, status) {
+  const linkInput = document.getElementById('link_' + mrId);
+  const meeting_link = linkInput ? linkInput.value.trim() : undefined;
+  try {
+    await apiPatch('/api/posts/' + postId + '/meeting-requests/' + mrId, {
+      status,
+      ...(meeting_link ? { meeting_link } : {}),
+    });
+    toast(status === 'scheduled' ? 'Meeting scheduled!' : 'Request rejected.', 'success');
+    loadMeetingRequests();
+    loadPost();
+  } catch (err) { toast(err.message || 'Failed to update meeting request.', 'error'); }
 }
 
 function goToMeetingRequest(pid, confidentiality) {
@@ -127,7 +192,7 @@ async function publishPost() {
     await apiPatch('/api/posts/' + postId, { status: 'active' });
     toast('Post published successfully!', 'success');
     loadPost();
-  } catch (err) { toast(err.message, 'error'); }
+  } catch (err) { toast(err.message || 'Failed to publish post.', 'error'); }
 }
 
 async function deletePost() {
@@ -136,7 +201,7 @@ async function deletePost() {
     await apiDelete('/api/posts/' + postId);
     toast('Post deleted.', 'success');
     setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
-  } catch (err) { toast(err.message, 'error'); }
+  } catch (err) { toast(err.message || 'Failed to delete post.', 'error'); }
 }
 
 async function markPartnerFound() {
@@ -145,7 +210,7 @@ async function markPartnerFound() {
     await apiPatch('/api/posts/' + postId, { status: 'partner_found' });
     toast('Marked as Partner Found!', 'success');
     loadPost();
-  } catch (err) { toast(err.message, 'error'); }
+  } catch (err) { toast(err.message || 'Failed to update post.', 'error'); }
 }
 
 loadPost();

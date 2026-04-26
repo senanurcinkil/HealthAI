@@ -54,6 +54,7 @@ def meeting_dict(m: MeetingRequest) -> dict:
         "nda_accepted": m.nda_accepted,
         "proposed_slots": json.loads(m.proposed_slots or "[]"),
         "confirmed_slot": m.confirmed_slot,
+        "meeting_link": m.meeting_link or "",
         "status": m.status,
         "created_at": m.created_at.strftime("%Y-%m-%d"),
     }

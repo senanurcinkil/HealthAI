@@ -22,7 +22,7 @@ async function doRegister() {
   const institution = document.getElementById('institution').value.trim();
   const city        = document.getElementById('city').value.trim();
   const expertise   = document.getElementById('expertise').value.trim();
-  const btn         = document.querySelector('.btn-primary');
+  const btn         = document.querySelector('.btn-success');
 
   document.getElementById('formError').classList.remove('show');
   document.getElementById('formSuccess').classList.remove('show');

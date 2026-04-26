@@ -1,8 +1,10 @@
 import json
+from datetime import date
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from auth import get_current_user
@@ -46,6 +48,16 @@ class CreateMeetingRequest(BaseModel):
     proposed_slots: List[str] = []
 
 
+def _auto_expire(db: Session, posts: list) -> list:
+    """FR-14: Mark posts whose expiry_date has passed as expired."""
+    today = date.today().isoformat()
+    for p in posts:
+        if p.auto_close and p.expiry_date and p.expiry_date < today and p.status == "active":
+            p.status = "expired"
+    db.commit()
+    return posts
+
+
 @router.get("")
 def list_posts(
     domain: Optional[str] = Query(None),
@@ -53,6 +65,7 @@ def list_posts(
     status: Optional[str] = Query(None),
     expertise: Optional[str] = Query(None),
     stage: Optional[str] = Query(None),
+    keyword: Optional[str] = Query(None),   # FR-22
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -62,7 +75,10 @@ def list_posts(
     if status:    q = q.filter(Post.status == status)
     if expertise: q = q.filter(Post.expertise_needed.ilike(f"%{expertise}%"))
     if stage:     q = q.filter(Post.stage == stage)
-    return [post_dict(p) for p in q.order_by(Post.created_at.desc()).all()]
+    if keyword:   q = q.filter(or_(Post.title.ilike(f"%{keyword}%"), Post.explanation.ilike(f"%{keyword}%")))
+    posts = q.order_by(Post.created_at.desc()).all()
+    _auto_expire(db, posts)
+    return [post_dict(p) for p in posts]
 
 
 @router.get("/mine")
@@ -150,6 +166,13 @@ def create_meeting_request(post_id: int, req: CreateMeetingRequest, current_user
         raise HTTPException(status_code=400, detail="NDA must be accepted for this post.")
     if not req.proposed_slots:
         raise HTTPException(status_code=400, detail="At least one time slot is required.")
+    # FR-35: one request per user per post
+    existing = db.query(MeetingRequest).filter(
+        MeetingRequest.post_id == post_id,
+        MeetingRequest.from_user_id == current_user.id,
+    ).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="You have already submitted a meeting request for this post.")
 
     mr = MeetingRequest(
         post_id=post_id,
@@ -177,3 +200,38 @@ def get_meeting_requests(post_id: int, current_user: User = Depends(get_current_
 
     requests = db.query(MeetingRequest).filter(MeetingRequest.post_id == post_id).all()
     return [meeting_dict(m) for m in requests]
+
+
+class UpdateMeetingRequest(BaseModel):
+    status: str
+    meeting_link: Optional[str] = None   # FR-34
+
+
+@router.patch("/{post_id}/meeting-requests/{mr_id}")
+def update_meeting_request(
+    post_id: int, mr_id: int,
+    req: UpdateMeetingRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if req.status not in ("pending", "scheduled", "rejected"):
+        raise HTTPException(status_code=400, detail="Status must be pending, scheduled, or rejected.")
+
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+    if post.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Only the post owner can update meeting requests.")
+
+    mr = db.query(MeetingRequest).filter(MeetingRequest.id == mr_id, MeetingRequest.post_id == post_id).first()
+    if not mr:
+        raise HTTPException(status_code=404, detail="Meeting request not found.")
+
+    mr.status = req.status
+    if req.meeting_link is not None:
+        mr.meeting_link = req.meeting_link
+    if req.status == "scheduled":
+        post.status = "meeting_scheduled"
+    db.commit()
+    add_log(db, current_user.id, "MEETING_STATUS_UPDATED", "meeting_request", mr_id)
+    return meeting_dict(mr)

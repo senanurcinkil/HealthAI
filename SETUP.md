@@ -1,5 +1,24 @@
 # Setup Guide
 
+## Option A — Docker (Recommended)
+
+### Requirements
+- Docker Desktop
+
+```bash
+cd HEALTH-AI
+docker compose up --build
+```
+
+- Frontend: `http://localhost`
+- Backend API docs: `http://localhost:8080/docs`
+
+The SQLite database is persisted in a Docker volume (`db_data`).
+
+---
+
+## Option B — Manual
+
 ## Requirements
 
 - Python 3.10+

@@ -23,10 +23,11 @@ Built for **SENG 384 — Software Project III** (V2: Full Stack Integration).
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Vanilla HTML / CSS / JavaScript |
+| Frontend | Vanilla HTML / CSS / JavaScript (served via nginx) |
 | Backend | FastAPI (Python) |
 | Database | SQLite (via SQLAlchemy) |
 | Auth | JWT (python-jose) + bcrypt |
+| Deployment | Docker + Docker Compose |
 
 ---
 
@@ -34,10 +35,12 @@ Built for **SENG 384 — Software Project III** (V2: Full Stack Integration).
 
 ```
 HEALTH-AI/
+├── docker-compose.yml
 ├── frontend/
+│   ├── Dockerfile
+│   ├── nginx.conf
 │   ├── theme.css                  # Design system (CSS variables + components)
 │   ├── shared.js                  # API helpers, JWT session, nav bar
-│   ├── mock-data.js               # Legacy seed data (kept for reference)
 │   ├── login.html / login.js
 │   ├── register.html / register.js
 │   ├── dashboard.html / dashboard.js
@@ -48,14 +51,21 @@ HEALTH-AI/
 │   ├── profile.html / profile.js
 │   └── admin.html / admin.js
 ├── backend/
-│   ├── main.py                    # FastAPI app — all routes
+│   ├── Dockerfile
+│   ├── main.py                    # FastAPI app entry point
 │   ├── models.py                  # SQLAlchemy models
 │   ├── database.py                # SQLite engine + session
 │   ├── auth.py                    # JWT + bcrypt helpers
 │   ├── requirements.txt
+│   ├── routers/
+│   │   ├── auth.py                # /api/auth/register, /api/auth/login
+│   │   ├── posts.py               # /api/posts — CRUD + meeting requests
+│   │   ├── users.py               # /api/users — profile, export, delete
+│   │   └── admin.py               # /api/admin — posts, users, logs
 │   └── healthai.db                # SQLite database (auto-created)
 └── docs/
-    └── SRS_HealthAI_CoCreationPlatform_V1.docx
+    ├── SRS_HealthAI_CoCreation_Platform_V2.pdf
+    └── SDD_Template_HealthAI_EN.docx
 ```
 
 ---

@@ -65,6 +65,8 @@ def _allowed_origins() -> list[str]:
     "http://localhost:5501",
     "http://127.0.0.1:5501",
     "https://healthai-1-hgnp.onrender.com",
+    "https://healthai-2-fxsy.onrender.com",
+    "https://healthai-3-fxsy.onrender.com",
     ]
 
 

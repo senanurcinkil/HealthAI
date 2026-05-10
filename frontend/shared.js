@@ -1,5 +1,5 @@
 // ── API CONFIG ────────────────────────────────────────────────────
-const API_BASE = 'https://healthai-1-hgnp.onrender.com';
+const API_BASE = 'https://healthai-backend-yaqt.onrender.com';
 
 // ── TOKEN & SESSION ───────────────────────────────────────────────
 function getToken() {

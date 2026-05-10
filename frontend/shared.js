@@ -1,5 +1,5 @@
 // ── API CONFIG ────────────────────────────────────────────────────
-const API_BASE = 'http://127.0.0.1:8080';
+const API_BASE = 'https://healthai-1-hgnp.onrender.com';
 
 // ── TOKEN & SESSION ───────────────────────────────────────────────
 function getToken() {
